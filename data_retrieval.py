@@ -50,7 +50,7 @@ class Article(Model):
     id = UUIDField(primary_key=True)
     title = CharField(max_length=256)
     keywords = CharField(max_length=256)
-    text = TextField()
+    content = TextField()
     url = CharField(max_length=128)
     student_id = ForeignKeyField(Students, to_field='id', db_column='student_id')
     class Meta:
@@ -66,5 +66,5 @@ me = Students(id=my_id, name='Амир',surname='Кадыров',mygroup='11-501
 me.save(force_insert=True)
 
 for i in range(len(titles)):
-    data = Article(id=uuid.uuid4(), title=titles[i], keywords=tags[i], text=texts[i],url=hrefs[i], student_id=my_id)
+    data = Article(id=uuid.uuid4(), title=titles[i], keywords=tags[i], content=texts[i],url=hrefs[i], student_id=my_id)
     data.save(force_insert=True)
