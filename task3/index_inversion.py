@@ -1,7 +1,7 @@
 from task1.data_retrieval import Article
 from nltk.corpus import stopwords
 import re, string, uuid
-from nltk.stem.snowball import RussianStemmer
+from task2.porter_stemmer import Stemmer
 from peewee import *
 
 pg_db = PostgresqlDatabase('stopgame', user='postgres', password='postgres',
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     articles = Article.select()
     punctuation = string.punctuation + "«»—•’"
 
-    porter = RussianStemmer()
+    porter = Stemmer()
 
     stop = stopwords.words('russian')
     terms = {}
