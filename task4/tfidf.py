@@ -12,7 +12,7 @@ pg_db = PostgresqlDatabase('stopgame', user='postgres', password='postgres',
 
 class ArticleTerm(Model):
     article_id = ForeignKeyField(Article, to_field='id', db_column='article_id')
-    term_id = ForeignKeyField(WordsPorter, to_field='id', db_column='term_id')
+    term_id = ForeignKeyField(TermsList, to_field='term_id', db_column='term_id')
     tf_idf = FloatField()
 
     class Meta:
@@ -24,6 +24,7 @@ if __name__ == '__main__':
     words = WordsPorter.select()
 
     word_article_id = {}
+    word_id = {}
 
     for word in words:
         if word.article_id not in word_article_id:
@@ -32,11 +33,13 @@ if __name__ == '__main__':
 
     article_word = {}
     for word in words:
+        t_id = TermsList.get(TermsList.term_text == word.term).term_id
+        word_id[word.term] = t_id
+
         if word.article_id not in article_word:
             article_word[word.article_id] = [word.term]
         else:
             article_word[word.article_id].append(word.term)
-
     tf = {}
     # Compute TF
     for key in article_word.keys():
@@ -58,13 +61,10 @@ if __name__ == '__main__':
     for word in word_article.keys():
         idf[word] = math.log10(len(tf.keys()) / len(word_article[word]))
 
-    print(idf)
-
     ArticleTerm.create_table()
 
     for article_id in tf.keys():
         for word in tf[article_id].keys():
             tf_idf = tf[article_id][word] * idf[word]
-            word_id = word_article_id[article_id][word]
-            article_term = ArticleTerm(article_id=article_id, term_id=word_id, tf_idf=tf_idf)
+            article_term = ArticleTerm(article_id=article_id, term_id=word_id[word], tf_idf=tf_idf)
             article_term.save(force_insert=True)
