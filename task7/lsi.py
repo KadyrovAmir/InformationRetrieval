@@ -39,13 +39,9 @@ if __name__ == '__main__':
 
     query_vector = []
     for t in all_terms:
-        query_flag_check = True
-        for query_t in query_terms_id:
-            if str(t) == str(query_t):
-                query_vector.append(1)
-                query_flag_check = False
-                break
-        if query_flag_check:
+        if str(t) in query_terms_id:
+            query_vector.append(1)
+        else:
             query_vector.append(0)
 
     rank = 5
